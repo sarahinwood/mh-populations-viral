@@ -21,7 +21,6 @@ library(viridis)
 ##depth files
 st_depth_file_i12 <- snakemake@input[["st_depth_file_i12"]]
 st_depth_file_i28 <- snakemake@input[["st_depth_file_i28"]]
-st_depth_file_i36 <- snakemake@input[["st_depth_file_i36"]]
 st_depth_file_i52 <- snakemake@input[["st_depth_file_i52"]]
 st_depth_file_i84 <- snakemake@input[["st_depth_file_i84"]]
 ##scaffold labels
@@ -35,17 +34,14 @@ scaffold_id_table <- snakemake@input[["scaffold_id_table"]]
 st_depth_names <- c("Scaffold_full_id", "BP", "depth")
 st_depth_12 <- fread(st_depth_file_i12, col.names=st_depth_names)
 st_depth_28 <- fread(st_depth_file_i28, col.names=st_depth_names)
-st_depth_36 <- fread(st_depth_file_i36, col.names=st_depth_names)
 st_depth_52 <- fread(st_depth_file_i52, col.names=st_depth_names)
 st_depth_84 <- fread(st_depth_file_i84, col.names=st_depth_names)
 ##add sample label so tables can be joined
 st_depth_12$Sample <- "i12_Lincoln"
 st_depth_28$Sample <- "i28_Lincoln"
-st_depth_36$Sample <- "i36_Ruakura"
 st_depth_52$Sample <- "i52_Lincoln"
 st_depth_84$Sample <- "i84_Lincoln"
-full_depth_table <- rbind(st_depth_12, st_depth_28,
-                            st_depth_36, st_depth_52, st_depth_84)
+full_depth_table <- rbind(st_depth_12, st_depth_28, st_depth_52, st_depth_84)
 ##merge with table of scaffold ids for plotting
 scaffold_table <- fread(scaffold_id_table, header=TRUE)
 st_depth_boxpl <- merge(full_depth_table, scaffold_table, by="Scaffold_full_id", all.x=TRUE)
@@ -70,7 +66,7 @@ st_depth_boxpl$Scaffold_label <- factor(st_depth_boxpl$Scaffold_label,
 ##making panel box plot##
 ##########################
 ##height/width in inches
-pdf(snakemake@output[["boxplot_panel"]], height=15, width=22)
+pdf(snakemake@output[["boxplot_panel"]], height=15, width=18)
 ggplot(st_depth_boxpl, aes(x=Scaffold_id, y=depth, colour=Scaffold_label))+
   ##make outlier points somewhat transparent
   geom_boxplot(outlier.shape=NA)+
@@ -82,7 +78,7 @@ ggplot(st_depth_boxpl, aes(x=Scaffold_id, y=depth, colour=Scaffold_label))+
   ylab("Depth")+
   stat_summary(fun.y=mean, geom="point", colour="grey35")+
   ##colour-blind friendly palette
-  scale_colour_viridis(discrete=TRUE)+
+  scale_colour_viridis(discrete=TRUE, direction=-1)+
   ##make plot with panel for each sample
   facet_wrap(~Sample)+
   ## - full plot y axis range so large boxplots not visible, just outliers
