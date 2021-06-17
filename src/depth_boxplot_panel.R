@@ -54,8 +54,8 @@ setorder(scaffold_table, scaffold_number)
 st_depth_labels <- merge(full_depth_table, scaffold_table, by="#Name", all.x=TRUE)
 st_depth_boxpl <- subset(st_depth_labels, !(plot_group=="Other contig"))
 ##remove outlier contigs
-mh_depth_outliers <- list("scaffold_90", "scaffold_995")
-st_depth_boxpl <- subset(st_depth_labels, !(`#Name` %in% mh_depth_outliers))
+#mh_depth_outliers <- list("scaffold_90", "scaffold_995")
+#st_depth_boxpl <- subset(st_depth_labels, !(`#Name` %in% mh_depth_outliers))
 ##order legend labels
 st_depth_boxpl$plot_group <- factor(st_depth_boxpl$plot_group, levels=c("Hi-C scaffold", "Viral contig"))
 
@@ -72,10 +72,26 @@ ggplot(st_depth_boxpl, aes(x=reorder(`#Name`, scaffold_number), y=depth, colour=
         axis.ticks.x=element_blank(),
         legend.title = element_blank())+
   xlab("")+
-  ylab("Depth")+
-  stat_summary(fun.y=mean, geom="point", colour="grey35")+
-  scale_colour_viridis(discrete=TRUE)+
-  coord_cartesian(ylim = c(0,35))+
+  ylab("Sequencing depth")+
+  stat_summary(fun=mean, geom="point", colour="grey35")+
+  scale_colour_viridis(discrete=TRUE, direction=-1)+
+  coord_cartesian(ylim = c(0,100))+
+  facet_wrap(~Sample)
+dev.off()
+
+pdf(snakemake@output[["grouped_boxplot_panel"]], height=7.5, width=10)
+ggplot(st_depth_boxpl, aes(x=reorder(plot_group, scaffold_number), y=depth, colour=plot_group))+
+  geom_boxplot(outlier.shape=NA)+
+  theme_bw(base_size=18)+
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.title = element_blank())+
+  xlab("")+
+  ylab("Sequencing depth")+
+  stat_summary(fun=mean, geom="point", colour="grey35")+
+  scale_colour_viridis(discrete=TRUE, direction=-1)+
+  coord_cartesian(ylim = c(0,100))+
   facet_wrap(~Sample)
 dev.off()
 

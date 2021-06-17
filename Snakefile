@@ -57,7 +57,8 @@ rule depth_boxplot_panel:
         st_depth_file_i84 = 'output/samtools_depth/filtered/filtered_indiv84_mhyp_lincoln_depth.out',
         mh_gc_table = 'data/contig_ids/Mh_gc_table.csv'
     output:
-        boxplot_panel = 'output/depth_analysis/boxplot_panel.pdf'
+        boxplot_panel = 'output/depth_analysis/boxplot_panel.pdf',
+        grouped_boxplot_panel = 'output/depth_analysis/grouped_boxplot_panel.pdf'
     singularity:
         tidyverse_container
     threads:
