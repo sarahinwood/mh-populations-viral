@@ -31,7 +31,8 @@ rule target:
     input:
         expand('output/depth_analysis/{sample}_boxplot.jpeg', sample=all_samples),
         expand('output/depth_stats/{sample}/wilcox_res.txt', sample=all_samples),
-        'output/depth_analysis/boxplot_panel.pdf'
+        'output/depth_analysis/boxplot_panel.svg',
+        expand('output/samtools/{sample}/sorted.bam.bai', sample=all_samples)
 
 ##GC depth scatterplots?
 
@@ -57,7 +58,7 @@ rule depth_boxplot_panel:
         st_depth_file_i84 = 'output/samtools_depth/filtered/filtered_indiv84_mhyp_lincoln_depth.out',
         mh_gc_table = 'data/contig_ids/Mh_gc_table.csv'
     output:
-        boxplot_panel = 'output/depth_analysis/boxplot_panel.pdf',
+        boxplot_panel_svg = 'output/depth_analysis/boxplot_panel.svg',
         grouped_boxplot_panel = 'output/depth_analysis/grouped_boxplot_panel.pdf'
     singularity:
         tidyverse_container
@@ -127,6 +128,20 @@ rule samtools_depth:
         '{input.sorted_bam} '
         '-a '
         '> {output.depth_out} '
+        '2> {log}'
+
+rule samtools_index:
+    input:
+        bam = 'output/samtools/{sample}/sorted.bam'
+    output:
+        index = 'output/samtools/{sample}/sorted.bam.bai'
+    log:
+        'output/logs/samtools_index_{sample}.log'
+    threads:
+        20
+    shell:
+        'samtools index '
+        '{input.bam} '
         '2> {log}'
 
 rule samtools_sort:
