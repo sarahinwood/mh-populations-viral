@@ -66,12 +66,8 @@ st_depth_boxpl$plot_group <- factor(st_depth_boxpl$plot_group, levels=c("Hi-C sc
 panel <- ggplot(st_depth_boxpl, aes(x=reorder(`#Name`, scaffold_number), y=depth, colour=plot_group))+
   geom_boxplot(outlier.shape=NA)+
   theme_bw(base_size=18)+
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        legend.title = element_blank(),
-        strip.background = element_blank(),
-        strip.text.x = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title = element_blank())+
   xlab("")+
   ylab("Sequencing depth")+
   stat_summary(fun=mean, geom="point", colour="grey35")+
@@ -84,12 +80,8 @@ pdf(snakemake@output[["grouped_boxplot_panel"]], height=7.5, width=10)
 ggplot(st_depth_boxpl, aes(x=reorder(plot_group, scaffold_number), y=depth, colour=plot_group))+
   geom_boxplot(outlier.shape=NA)+
   theme_bw(base_size=18)+
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        legend.title = element_blank(),
-        strip.background = element_blank(),
-        strip.text.x = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title = element_blank())+
   xlab("")+
   ylab("Sequencing depth")+
   stat_summary(fun=mean, geom="point", colour="grey35")+
